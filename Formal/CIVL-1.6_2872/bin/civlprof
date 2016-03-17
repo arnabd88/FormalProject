@@ -1,0 +1,2 @@
+“!/bin/sh”
+“java -agentlib:hprof=cpu=samples,depth=200,interval=10 -jar /opt/CIVL-1.6_2872/lib/civl-1.6_2872.jar $@”

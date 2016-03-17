@@ -1,0 +1,610 @@
+CIVL v1.5 of 2015-10-31 -- http://vsl.cis.udel.edu/civl
+===================The program after linking and applying transformer is:===================
+//======================== civlc.cvh =======================
+typedef struct $proc $proc;
+typedef struct $scope $scope;
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+//========================= stdio.h ========================
+int printf(restrict char* format, ...);
+//======================== civlc.cvh =======================
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+//======================= bundle.cvh =======================
+typedef struct $bundle $bundle;
+$bundle $bundle_pack(void* ptr, int size);
+void $bundle_unpack($bundle bundle, void* ptr);
+//===================== concurrency.cvh ====================
+typedef struct $gbarrier* $gbarrier;
+typedef struct $barrier* $barrier;
+$gbarrier $gbarrier_create($scope scope, int size);
+void $gbarrier_destroy($gbarrier barrier);
+$barrier $barrier_create($scope scope, $gbarrier gbarrier, int place);
+void $barrier_destroy($barrier barrier);
+typedef struct $collect_record $collect_record;
+typedef struct $gcollect_checker* $gcollect_checker;
+typedef struct $collect_checker* $collect_checker;
+$gcollect_checker $gcollect_checker_create($scope scope);
+void $gcollect_checker_destroy($gcollect_checker checker);
+$collect_checker $collect_checker_create($scope scope, $gcollect_checker gchecker);
+void $collect_checker_destroy($collect_checker checker);
+//========================== mpi.h =========================
+typedef enum $anon_enum_0$TU3{
+  MPI_CHAR,
+  MPI_CHARACTER,
+  MPI_SIGNED_CHAR,
+  MPI_UNSIGNED_CHAR,
+  MPI_BYTE,
+  MPI_WCHAR,
+  MPI_SHORT,
+  MPI_UNSIGNED_SHORT,
+  MPI_INT,
+  MPI_INT16_T,
+  MPI_INT32_T,
+  MPI_INT64_T,
+  MPI_INT8_T,
+  MPI_INTEGER,
+  MPI_INTEGER1,
+  MPI_INTEGER16,
+  MPI_INTEGER2,
+  MPI_INTEGER4,
+  MPI_INTEGER8,
+  MPI_UNSIGNED,
+  MPI_LONG,
+  MPI_UNSIGNED_LONG,
+  MPI_FLOAT,
+  MPI_DOUBLE,
+  MPI_LONG_DOUBLE,
+  MPI_LONG_LONG_INT,
+  MPI_UNSIGNED_LONG_LONG,
+  MPI_LONG_LONG,
+  MPI_PACKED,
+  MPI_LB,
+  MPI_UB,
+  MPI_UINT16_T,
+  MPI_UINT32_T,
+  MPI_UINT64_T,
+  MPI_UINT8_T,
+  MPI_FLOAT_INT,
+  MPI_DOUBLE_INT,
+  MPI_LONG_INT,
+  MPI_SHORT_INT,
+  MPI_2INT,
+  MPI_LONG_DOUBLE_INT,
+  MPI_AINT,
+  MPI_OFFSET,
+  MPI_2DOUBLE_PRECISION,
+  MPI_2INTEGER,
+  MPI_2REAL,
+  MPI_C_BOOL,
+  MPI_C_COMPLEX,
+  MPI_C_DOUBLE_COMPLEX,
+  MPI_C_FLOAT_COMPLEX,
+  MPI_C_LONG_DOUBLE_COMPLEX,
+  MPI_COMPLEX,
+  MPI_COMPLEX16,
+  MPI_COMPLEX32,
+  MPI_COMPLEX4,
+  MPI_COMPLEX8,
+  MPI_REAL,
+  MPI_REAL16,
+  MPI_REAL2,
+  MPI_REAL4,
+  MPI_REAL8
+} MPI_Datatype;
+typedef struct MPI_Comm MPI_Comm;
+typedef struct MPI_Status{
+    int MPI_SOURCE;
+    int MPI_TAG;
+    int MPI_ERROR;
+    int size;
+} MPI_Status;
+int MPI_Send(void*, int, MPI_Datatype, int, int, MPI_Comm);
+int MPI_Recv(void*, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status*);
+int MPI_Comm_size(MPI_Comm, int*);
+int MPI_Comm_rank(MPI_Comm, int*);
+//======================== comm.cvh ========================
+typedef struct $message{
+    int source;
+    int dest;
+    int tag;
+    $bundle data;
+    int size;
+} $message;
+typedef struct $queue $queue;
+typedef struct $gcomm* $gcomm;
+typedef struct $comm* $comm;
+$message $message_pack(int source, int dest, int tag, void* data, int size);
+int $message_source($message message);
+int $message_tag($message message);
+int $message_size($message message);
+void $message_unpack($message message, void* buf, int size);
+$gcomm $gcomm_create($scope scope, int size);
+void $gcomm_destroy($gcomm gcomm);
+$comm $comm_create($scope scope, $gcomm gcomm, int place);
+void $comm_destroy($comm comm);
+int $comm_size($comm comm);
+int $comm_place($comm comm);
+void $comm_enqueue($comm comm, $message message);
+$message $comm_dequeue($comm comm, int source, int tag);
+//====================== civl-mpi.cvh ======================
+typedef enum _mpi_sys_status_{
+  __UNINIT,
+  __INIT,
+  __FINALIZED
+} $mpi_sys_status;
+typedef struct MPI_Comm MPI_Comm;
+typedef struct $mpi_gcomm $mpi_gcomm;
+int sizeofDatatype(MPI_Datatype);
+void $mpi_set_status($mpi_sys_status newStatus);
+$mpi_sys_status $mpi_get_status(void);
+$mpi_gcomm $mpi_gcomm_create($scope, int);
+void $mpi_gcomm_destroy($mpi_gcomm);
+MPI_Comm $mpi_comm_create($scope, $mpi_gcomm, int);
+void $mpi_comm_destroy(MPI_Comm);
+int $mpi_init(void);
+int $mpi_finalize(void);
+int $mpi_send(void*, int, MPI_Datatype, int, int, $comm, int);
+int $mpi_recv(void*, int, MPI_Datatype, int, int, $comm, MPI_Status*, int);
+void $mpi_assertConsistentType(void* buf, MPI_Datatype datatype);
+//======================== civlc.cvh =======================
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+//========================= seq.cvh ========================
+void $seq_init(void* array, int count, void* value);
+//======================= bundle.cvh =======================
+$bundle $bundle_pack(void* ptr, int size);
+void $bundle_unpack($bundle bundle, void* ptr);
+//===================== concurrency.cvh ====================
+$gbarrier $gbarrier_create($scope scope, int size);
+void $gbarrier_destroy($gbarrier barrier);
+$barrier $barrier_create($scope scope, $gbarrier gbarrier, int place);
+void $barrier_destroy($barrier barrier);
+$gcollect_checker $gcollect_checker_create($scope scope);
+void $gcollect_checker_destroy($gcollect_checker checker);
+$collect_checker $collect_checker_create($scope scope, $gcollect_checker gchecker);
+void $collect_checker_destroy($collect_checker checker);
+//========================= seq.cvh ========================
+void $seq_init(void* array, int count, void* value);
+//======================== civlc.cvh =======================
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+//======================= bundle.cvh =======================
+$bundle $bundle_pack(void* ptr, int size);
+void $bundle_unpack($bundle bundle, void* ptr);
+//===================== concurrency.cvh ====================
+$gbarrier $gbarrier_create($scope scope, int size);
+void $gbarrier_destroy($gbarrier barrier);
+$barrier $barrier_create($scope scope, $gbarrier gbarrier, int place);
+void $barrier_destroy($barrier barrier);
+$gcollect_checker $gcollect_checker_create($scope scope);
+void $gcollect_checker_destroy($gcollect_checker checker);
+$collect_checker $collect_checker_create($scope scope, $gcollect_checker gchecker);
+void $collect_checker_destroy($collect_checker checker);
+//========================= seq.cvh ========================
+void $seq_init(void* array, int count, void* value);
+//===================== concurrency.cvl ====================
+struct $gbarrier{
+    int nprocs;
+    $proc  proc_map[];
+    _Bool  in_barrier[];
+    int num_in_barrier;
+}
+struct $barrier{
+    int place;
+    $gbarrier gbarrier;
+}
+struct $collect_record{
+    $bundle entries;
+    _Bool  marks[];
+    int numMarked;
+}
+struct $gcollect_checker{
+    int length;
+    $collect_record  records[];
+}
+struct $collect_checker{
+    $gcollect_checker checker;
+}
+//======================== civlc.cvh =======================
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+//======================= bundle.cvh =======================
+$bundle $bundle_pack(void* ptr, int size);
+void $bundle_unpack($bundle bundle, void* ptr);
+//===================== concurrency.cvh ====================
+$gbarrier $gbarrier_create($scope scope, int size);
+void $gbarrier_destroy($gbarrier barrier);
+$barrier $barrier_create($scope scope, $gbarrier gbarrier, int place);
+void $barrier_destroy($barrier barrier);
+$gcollect_checker $gcollect_checker_create($scope scope);
+void $gcollect_checker_destroy($gcollect_checker checker);
+$collect_checker $collect_checker_create($scope scope, $gcollect_checker gchecker);
+void $collect_checker_destroy($collect_checker checker);
+//======================== comm.cvh ========================
+$message $message_pack(int source, int dest, int tag, void* data, int size);
+int $message_source($message message);
+int $message_tag($message message);
+int $message_size($message message);
+void $message_unpack($message message, void* buf, int size);
+$gcomm $gcomm_create($scope scope, int size);
+void $gcomm_destroy($gcomm gcomm);
+$comm $comm_create($scope scope, $gcomm gcomm, int place);
+void $comm_destroy($comm comm);
+int $comm_size($comm comm);
+int $comm_place($comm comm);
+void $comm_enqueue($comm comm, $message message);
+$message $comm_dequeue($comm comm, int source, int tag);
+//========================== mpi.h =========================
+int MPI_Send(void*, int, MPI_Datatype, int, int, MPI_Comm);
+int MPI_Recv(void*, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status*);
+int MPI_Comm_size(MPI_Comm, int*);
+int MPI_Comm_rank(MPI_Comm, int*);
+//====================== civl-mpi.cvh ======================
+int sizeofDatatype(MPI_Datatype);
+void $mpi_set_status($mpi_sys_status newStatus);
+$mpi_sys_status $mpi_get_status(void);
+$mpi_gcomm $mpi_gcomm_create($scope, int);
+void $mpi_gcomm_destroy($mpi_gcomm);
+MPI_Comm $mpi_comm_create($scope, $mpi_gcomm, int);
+void $mpi_comm_destroy(MPI_Comm);
+int $mpi_init(void);
+int $mpi_finalize(void);
+int $mpi_send(void*, int, MPI_Datatype, int, int, $comm, int);
+int $mpi_recv(void*, int, MPI_Datatype, int, int, $comm, MPI_Status*, int);
+void $mpi_assertConsistentType(void* buf, MPI_Datatype datatype);
+//========================= seq.cvh ========================
+void $seq_init(void* array, int count, void* value);
+//======================== civlc.cvh =======================
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+//======================= bundle.cvh =======================
+$bundle $bundle_pack(void* ptr, int size);
+void $bundle_unpack($bundle bundle, void* ptr);
+//======================== comm.cvh ========================
+$message $message_pack(int source, int dest, int tag, void* data, int size);
+int $message_source($message message);
+int $message_tag($message message);
+int $message_size($message message);
+void $message_unpack($message message, void* buf, int size);
+$gcomm $gcomm_create($scope scope, int size);
+void $gcomm_destroy($gcomm gcomm);
+$comm $comm_create($scope scope, $gcomm gcomm, int place);
+void $comm_destroy($comm comm);
+int $comm_size($comm comm);
+int $comm_place($comm comm);
+void $comm_enqueue($comm comm, $message message);
+$message $comm_dequeue($comm comm, int source, int tag);
+//======================== civlc.cvh =======================
+void $assert(_Bool expr, ...);
+void $assume(_Bool expr);
+void $elaborate(int x);
+//======================= bundle.cvh =======================
+$bundle $bundle_pack(void* ptr, int size);
+void $bundle_unpack($bundle bundle, void* ptr);
+//========================= stdio.h ========================
+int printf(restrict char* format, ...);
+//========================== mpi.h =========================
+int MPI_Send(void*, int, MPI_Datatype, int, int, MPI_Comm);
+int MPI_Recv(void*, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status*);
+int MPI_Comm_size(MPI_Comm, int*);
+int MPI_Comm_rank(MPI_Comm, int*);
+//========================= mpi.cvl ========================
+struct MPI_Comm{
+    $comm p2p;
+    $comm col;
+    $collect_checker collect_checker;
+    $barrier barrier;
+    int gcommIndex;
+}
+int MPI_Comm_size(MPI_Comm comm, int* size)
+{
+  $mpi_sys_status curr_status;
+  curr_status = $mpi_get_status();
+  $assert(curr_status == __INIT, "MPI_Comm_size() cannot be invoked without MPI_Init() being called before.\n");
+  *size = $comm_size(comm.p2p);
+  return 0;
+}
+int MPI_Comm_rank(MPI_Comm comm, int* rank)
+{
+  $mpi_sys_status curr_status;
+  curr_status = $mpi_get_status();
+  $assert(curr_status == __INIT, "MPI_Comm_rank() cannot be invoked without MPI_Init() being called before.\n");
+  *rank = $comm_place(comm.p2p);
+  return 0;
+}
+int MPI_Send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, MPI_Comm comm)
+{
+  $mpi_sys_status curr_status;
+  curr_status = $mpi_get_status();
+  $assert(curr_status == __INIT, "MPI_Send() cannot be invoked without MPI_Init() being called before.\n");
+  $mpi_assertConsistentType(buf, datatype);
+  int $sef$0 = $mpi_send(buf, count, datatype, dest, tag, comm.p2p, comm.gcommIndex);
+  return $sef$0;
+}
+int MPI_Recv(void* buf, int count, MPI_Datatype datatype, int source, int tag, MPI_Comm comm, MPI_Status* status)
+{
+  $mpi_sys_status curr_status;
+  curr_status = $mpi_get_status();
+  $assert(curr_status == __INIT, "MPI_Recv() cannot be invoked without MPI_Init() being called before.\n");
+  $mpi_assertConsistentType(buf, datatype);
+  int $sef$1 = $mpi_recv(buf, count, datatype, source, tag, comm.p2p, status, comm.gcommIndex);
+  return $sef$1;
+}
+//====================== civl-mpi.cvl ======================
+struct $mpi_gcomm{
+    $gcomm p2p;
+    $gcomm col;
+    $gcollect_checker collect_checker;
+    $gbarrier gbarrier;
+}
+int sizeofDatatype(MPI_Datatype datatype)
+{
+  switch(datatype)
+  {
+    case MPI_INT:
+      return sizeof(int);
+    case MPI_2INT:
+      return sizeof(int) * 2;
+    case MPI_FLOAT:
+      return sizeof(float);
+    case MPI_DOUBLE:
+      return sizeof(double);
+    case MPI_CHAR:
+      return sizeof(char);
+    case MPI_BYTE:
+      return sizeof(char);
+    case MPI_SHORT:
+      return sizeof(short);
+    case MPI_LONG:
+      return sizeof(long);
+    case MPI_LONG_DOUBLE:
+      return sizeof(long double);
+    case MPI_LONG_LONG_INT:
+      return sizeof(long long);
+    case MPI_LONG_LONG:
+      return sizeof(long long);
+    case MPI_UNSIGNED_LONG_LONG:
+      return sizeof(unsigned long long);
+    default:
+      $assert(0, "Unreachable");
+  }
+}
+$mpi_gcomm $mpi_gcomm_create($scope scope, int size)
+{
+  $mpi_gcomm result;
+  result.p2p = $gcomm_create(scope, size);
+  result.col = $gcomm_create(scope, size);
+  result.collect_checker = $gcollect_checker_create(scope);
+  result.gbarrier = $gbarrier_create(scope, size);
+  return result;
+}
+void $mpi_gcomm_destroy($mpi_gcomm gc)
+{
+  $gcomm_destroy(gc.p2p);
+  $gcomm_destroy(gc.col);
+  $gcollect_checker_destroy(gc.collect_checker);
+  $gbarrier_destroy(gc.gbarrier);
+}
+MPI_Comm $mpi_comm_create($scope scope, $mpi_gcomm gc, int rank)
+{
+  MPI_Comm result;
+  result.p2p = $comm_create(scope, gc.p2p, rank);
+  result.col = $comm_create(scope, gc.col, rank);
+  result.collect_checker = $collect_checker_create(scope, gc.collect_checker);
+  result.barrier = $barrier_create(scope, gc.gbarrier, rank);
+  result.gcommIndex = 0;
+  return result;
+}
+void $mpi_comm_destroy(MPI_Comm comm)
+{
+  $mpi_sys_status curr_status;
+  curr_status = $mpi_get_status();
+  if(comm.gcommIndex == 0)
+    $assert(curr_status == __FINALIZED, "Process terminates without calling MPI_Finalize() first.");
+  $comm_destroy(comm.p2p);
+  $comm_destroy(comm.col);
+  $collect_checker_destroy(comm.collect_checker);
+  $barrier_destroy(comm.barrier);
+}
+int $mpi_init(void)
+{
+  $mpi_set_status(__INIT);
+  return 0;
+}
+int $mpi_finalize(void)
+{
+  $mpi_set_status(__FINALIZED);
+  return 0;
+}
+int $mpi_send(void* buf, int count, MPI_Datatype datatype, int dest, int tag, $comm comm, int MPICommId)
+{
+  if(dest >= 0)
+  {
+    int $sef$2 = sizeofDatatype(datatype);
+    int size = count * $sef$2;
+    int place = $comm_place(comm);
+    $message out = $message_pack(place, dest, tag, buf, size);
+    $comm_enqueue(comm, out);
+  }
+  return 0;
+}
+int $mpi_recv(void* buf, int count, MPI_Datatype datatype, int source, int tag, $comm comm, MPI_Status* status, int MPICommId)
+{
+  if((source >= 0) || (source == (-1)))
+  {
+    $message in;
+    $elaborate(source);
+    in = $comm_dequeue(comm, source, tag);
+    int $sef$3 = sizeofDatatype(datatype);
+    int size = count * $sef$3;
+    $message_unpack(in, buf, size);
+    if(status != (void*)0)
+    {
+      (status)->size = $message_size(in);
+      (status)->MPI_SOURCE = $message_source(in);
+      (status)->MPI_TAG = $message_tag(in);
+      (status)->MPI_ERROR = 0;
+    }
+  }
+  return 0;
+}
+//======================== comm.cvl ========================
+struct $queue{
+    int length;
+    $message  messages[];
+}
+struct $gcomm{
+    int nprocs;
+    $proc  procs[];
+    _Bool  isInit[];
+    $queue  buf[][];
+}
+struct $comm{
+    int place;
+    $gcomm gcomm;
+}
+$message $message_pack(int source, int dest, int tag, void* data, int size)
+{
+  $message result;
+  result.source = source;
+  result.dest = dest;
+  result.tag = tag;
+  result.data = $bundle_pack(data, size);
+  result.size = size;
+  return result;
+}
+int $message_source($message message)
+{
+  return message.source;
+}
+int $message_tag($message message)
+{
+  return message.tag;
+}
+int $message_size($message message)
+{
+  return message.size;
+}
+void $message_unpack($message message, void* buf, int size)
+{
+  $bundle_unpack(message.data, buf);
+  $assert(message.size <= size, "Message of size %d exceeds the specified size %d.", message.size, size);
+}
+int $comm_place($comm comm)
+{
+  return (comm)->place;
+}
+//================= mpi_sample_ring_comm.c =================
+$input int _gen_argc;
+$input char  _gen_argv[10][];
+//==================== OpenMPTransformer ===================
+$input int _omp_thread_max;
+//===================== MPITransformer =====================
+$input int _mpi_nprocs;
+$input int _mpi_nprocs_lo = 1;
+$input int _mpi_nprocs_hi;
+$assume((_mpi_nprocs_lo <= _mpi_nprocs) && (_mpi_nprocs <= _mpi_nprocs_hi));
+$mpi_gcomm _mpi_gcomm = $mpi_gcomm_create($here, _mpi_nprocs);
+$mpi_gcomm  _mpi_gcomms[];
+$seq_init(&(_mpi_gcomms), 1, &(_mpi_gcomm));
+void _mpi_process(int _mpi_rank)
+{
+  $mpi_sys_status _mpi_status = __UNINIT;
+  $assert(_mpi_status == __UNINIT);
+  MPI_Comm MPI_COMM_WORLD = $mpi_comm_create($here, _mpi_gcomm, _mpi_rank);
+  void $assume(_Bool expression);
+  $assume((0 < _gen_argc) && (_gen_argc < 10));
+  typedef struct DiArray{
+    int n1;
+    int n2;
+} Darr;
+  Darr display()
+  {
+    printf("here I am\n");
+    Darr d1;
+    d1.n1 = 5;
+    d1.n2 = 10;
+    return d1;
+  }
+  int Compute(MPI_Comm comm, int rank, int numProcs)
+  {
+    int Sum;
+    int send_partner;
+    int recv_partner;
+    MPI_Status stat;
+    if(rank == (numProcs - 1))
+      send_partner = 0;
+    else
+      send_partner = rank + 1;
+    if(rank == 0)
+      recv_partner = numProcs - 1;
+    else
+      recv_partner = rank - 1;
+    if(rank == 0)
+    {
+      Sum = rank;
+      MPI_Send(&(Sum), 1, MPI_INT, send_partner, 1, comm);
+      MPI_Recv(&(Sum), 1, MPI_INT, recv_partner, 1, comm, &(stat));
+    }
+    else
+    {
+      MPI_Recv(&(Sum), 1, MPI_INT, recv_partner, 1, comm, &(stat));
+      Sum = Sum + rank;
+      MPI_Send(&(Sum), 1, MPI_INT, send_partner, 1, comm);
+    }
+    return Sum;
+  }
+  int _gen_main(int argc, char*  argv[])
+  {
+    int numProcs;
+    int rank;
+    int Final_Sum;
+    $mpi_init();
+    MPI_Comm_size(MPI_COMM_WORLD, &(numProcs));
+    MPI_Comm_rank(MPI_COMM_WORLD, &(rank));
+    MPI_Comm comm = MPI_COMM_WORLD;
+    Darr d1 = display();
+    if(d1.n1 < d1.n2)
+      printf("SUCCESS\n");
+    Final_Sum = Compute(comm, rank, numProcs);
+    if(rank == 0)
+      printf("Final Sum on a Ring = %d\n", Final_Sum);
+    $mpi_finalize();
+  }
+  {
+    char*  _gen_argv_tmp[10];
+    {
+      int i = 0;
+      for(; i < 10; i = i + 1)
+        _gen_argv_tmp[i] = &(_gen_argv[i][0]);
+    }
+    _gen_main(_gen_argc, &(_gen_argv_tmp[0]));
+  }
+  $mpi_comm_destroy(MPI_COMM_WORLD);
+}
+int main()
+{
+  $parfor(int i: 0 .. _mpi_nprocs - 1)
+    _mpi_process(i);
+  $mpi_gcomm_destroy(_mpi_gcomm);
+}
+

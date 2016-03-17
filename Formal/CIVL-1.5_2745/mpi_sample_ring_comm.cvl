@@ -1,0 +1,89 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include "mpi.h"
+#include "omp.h"
+//-- Include the civl headers --
+#include <civlc.cvh>
+#include <civl-mpi.cvh>
+#include <civl-omp.cvh>
+#include <seq.cvh>
+
+//---- Part of MPI-Transformer -----
+
+void $seq_init(void* array, int count, void* value);
+
+$input int _gen_argc ;
+$input char _gen_argv[10][];
+
+$input int _mpi_nprocs ;
+$input int _mpi_nprocs_lo = 1 ;
+$input int _mpi_nprocs_hi = 5 ;
+
+$assert((_mpi_nprocs_lo <= _mpi_nprocs) && (_mpi_nprocs <= _mpi_nprocs_hi)) ;
+
+$mpi_gcomm  _mpi_gcomm = $mpi_gcomm_create($here, _mpi_nprocs);
+$mpi_gcomm _mpi_gcomms[] ;
+
+$seq_init(&(_mpi_gcomms), 1, &(_mpi_gcomm)) ;
+
+void _mpi_process(int _mpi_rank)
+{
+  //---- Required by civl -----
+  $mpi_sys_status _mpi_status = __UNINIT ;
+  $assert(_mpi_status == __UNINIT) ;
+  MPI_Comm MPI_COMM_WORLD = $mpi_comm_create($here, _mpi_gcomm, _mpi_rank);
+  void $assume(_Bool expression);
+  $assume((0 < _gen_argc) && (_gen_argc < 10)) ;
+  //---------------------------
+  typedef struct DiArray {
+     int n1;
+	 int n2;
+  } Darr ;
+  Darr display()
+  {
+    Darr d1 ;
+	d1.n1 = 5 ;
+	d1.n2 = 10;
+	return d1 ;
+  }
+
+  int _gen_main(int argc, char* argv[])
+  {
+    int numProcs ;
+	int rank ;
+	$mpi_init();
+	MPI_Comm_size(MPI_COMM_WORLD, &(numProcs));
+	MPI_Comm_rank(MPI_COMM_WORLD, &(rank));
+	MPI_Comm comm = MPI_COMM_WORLD ;
+	Darr d1 = display();
+	$assert(d1.n1 < d1.n2) ;
+	$when(d1.n1 > d1.n2) d1.n1 += d1.n2 - d1.n1 ;
+	$assert(d1.n1 < d1.n2) ;
+
+	$mpi_finalize();
+  }
+
+  //--- Required By civl ------
+  {
+     char*  _gen_argv_tmp[10] ;
+	 {
+	   int i=0;
+	   for(; i<10; i=i+1)
+	     _gen_argv_tmp[i] = &(_gen_argv[i][0]);
+	 }
+	 _gen_main(_gen_argc, &(_gen_argv_tmp[0]));
+  }
+  $mpi_comm_destroy(MPI_COMM_WORLD);
+}
+
+int main()
+{
+  $parfor(int i:0 .. _mpi_nprocs - 1)
+    _mpi_process(i);
+  $mpi_gcomm_destroy(_mpi_gcomm);
+}
+
+
+

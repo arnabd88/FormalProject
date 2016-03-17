@@ -1,0 +1,67 @@
+Session name....... mpi_solved_cvl_mod
+Directory.......... CIVLREP
+Date............... Wed Mar 16 12:17:02 MDT 2016
+numErrors.......... 1
+numDistinctErrors.. 1
+search truncated... true
+
+Violation 0[length=5, file=CIVLREP/mpi_solved_cvl_mod_0.trace]:
+CIVL execution violation in p0(id=0) (kind: OTHER, certainty: PROVEABLE)
+at mpi_solved_cvl_mod.cvl:97.2-9 "$parfor":
+The arguments of the domain for $parfor must be concrete.
+State -1:70
+| Path condition
+| | (0<=X2+-1*X3) && (0<=X2+-102)
+| Dynamic scopes
+| | dyscope d0 (id=0, parent=NULL, static=0)
+| | | variables
+| | | | _heap = 
+| | | | | objects of malloc 0:
+| | | | | | 0: ($gbarrier[1]){
+| | | | | | | {
+| | | | | | | | .nprocs=X2, 
+| | | | | | | | .proc_map=(lambda i : int . process<-2>), 
+| | | | | | | | .in_barrier=(lambda i : int . false), 
+| | | | | | | | .num_in_barrier=0}}
+| | | | | objects of malloc 2:
+| | | | | | 0: ($gcollect_checker[1]){
+| | | | | | | {
+| | | | | | | | .length=0, 
+| | | | | | | | .records={}}}
+| | | | | objects of malloc 4:
+| | | | | | 0: ($gcomm[1]){
+| | | | | | | {
+| | | | | | | | .nprocs=X2, 
+| | | | | | | | .procs=(lambda i : int . process<-1>), 
+| | | | | | | | .isInit=(lambda i : int . false), 
+| | | | | | | | .buf=(lambda i : int . ($queue[X2])<lambda i : int . $queue<0,($message[0])<>>>)}}
+| | | | | | 1: ($gcomm[1]){
+| | | | | | | {
+| | | | | | | | .nprocs=X2, 
+| | | | | | | | .procs=(lambda i : int . process<-1>), 
+| | | | | | | | .isInit=(lambda i : int . false), 
+| | | | | | | | .buf=(lambda i : int . ($queue[X2])<lambda i : int . $queue<0,($message[0])<>>>)}}
+| | | | _gen_argc = X0
+| | | | _gen_argv = (CHAR[10][])X1
+| | | | _mpi_nprocs = X2
+| | | | _mpi_nprocs_lo = 1
+| | | | _mpi_nprocs_hi = X3
+| | | | _mpi_gcomm = ($mpi_gcomm){.p2p=&<d0>heap.malloc4[0][0], .col=&<d0>heap.malloc4[1][0], .collect_checker=&<d0>heap.malloc2[0][0], .gbarrier=&<d0>heap.malloc0[0][0]}
+| | | | _mpi_gcomms = ($mpi_gcomm[1]){
+| | | | | {.p2p=&<d0>heap.malloc4[0][0], .col=&<d0>heap.malloc4[1][0], .collect_checker=&<d0>heap.malloc2[0][0], .gbarrier=&<d0>heap.malloc0[0][0]}}
+| | | | _dom_size0 = X2
+| | | | _par_procs0 = NULL
+| | | | _anon_0 = NULL
+| | | | _anon_1 = NULL
+| | | | _anon_2 = NULL
+| | | | _anon_3 = NULL
+| | | | _anon_4 = NULL
+| | | | _anon_5 = NULL
+| | | | _anon_6 = NULL
+| | | | _anon_7 = NULL
+| Process states
+| | process p0(id=0)
+| | | call stack
+| | | | Frame[function=_CIVL_system, location=10, mpi_solved_cvl_mod.cvl:97.2-9 "$parfor", dyscope=d0]
+
+
