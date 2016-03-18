@@ -10,7 +10,7 @@
 
 
 #define NUM_THREADS 8
-#define ARRAYSIZE 80
+#define ARRAYSIZE 5
 
 //using namespace std;
 //using std::string ;
@@ -233,12 +233,18 @@ void BitonicDriver( int N )
 
     int* buffer = (int*)malloc(sizeof(int)*N) ;
 	int r = N / numProcs ;
+	int last = 29 ;
 	//--- Initialize with random numbers -----
 	if(rank==0)
 	{
 	printf("--- Unsorted Input-Array ------\n");
 	#pragma parallel for
-	for(int k=0; k<N; k++)  buffer[k] = rand()%243 ;
+	//for(int k=0; k<N; k++)  buffer[k] = rand()%243 ;
+	for(int k=0; k<N; k++) {
+	//	buffer[k] = (last%(numProcs%(k+1)+1)) << k%numProcs ; 
+	    buffer[k] = (k*71)%(k+7) ;
+	}
+
     
 	for(int k=0; k<N; k++)  //cout << buffer[k] << " " ;
 	   printf("%d  ", buffer[k]);

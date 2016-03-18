@@ -1,0 +1,55 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#include <civlc.cvh>
+
+
+int log2ceil( int N )
+{
+  int shift_count=0;
+  int mask = 0;
+  int N_temp = N ;
+  while(N_temp != 0)
+  {
+    N_temp = N_temp >> 1 ;
+	shift_count = shift_count + 1 ;
+  }
+  printf("Floor Value = %d\n",shift_count) ;
+  return shift_count ;
+}
+
+int log2ceil1(int N)
+{
+  int quot = N;
+  int res = 0;
+  int count =0 ;
+  int index=0 ;
+  while(quot!=0)
+  {
+     printf("Quot = %d\n", quot);
+     res = quot%2 ;
+	 quot = quot/2 ;
+	 if(res==1) count = count + 1 ;
+	 if(quot==0) {
+	   if(count==1) return index ;
+	   else return index+1 ;
+	 }
+	 else index = index + 1 ;
+  }
+  return index ;
+}
+
+void main()
+{
+   printf("YaHoO!!");
+   int num1 = 17 ;
+   int num=0; 
+  // printf("log2Floor = %d\n of %d",log2ceil(10), 10);
+   num = log2ceil1(num1);
+   printf("Num = %d\n", num);
+}
+
+
+

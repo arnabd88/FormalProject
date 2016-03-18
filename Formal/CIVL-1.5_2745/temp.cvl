@@ -1,5 +1,5 @@
-CIVL v1.5 of 2015-10-31 -- http://vsl.cis.udel.edu/civl
-===================The program after linking and applying transformer is:===================
+//CIVL v1.5 of 2015-10-31 -- http://vsl.cis.udel.edu/civl
+//===================The program after linking and applying transformer is:===================
 //======================== civlc.cvh =======================
 typedef struct $proc $proc;
 typedef struct $scope $scope;
@@ -7,7 +7,7 @@ void $assert(_Bool expr, ...);
 void $assume(_Bool expr);
 void $elaborate(int x);
 //========================= stdio.h ========================
-int printf(restrict char* format, ...);
+//int printf(restrict char* format, ...);
 //======================== civlc.cvh =======================
 void $assert(_Bool expr, ...);
 void $assume(_Bool expr);
@@ -205,23 +205,23 @@ struct $gbarrier{
     $proc  proc_map[];
     _Bool  in_barrier[];
     int num_in_barrier;
-}
+} ;
 struct $barrier{
     int place;
     $gbarrier gbarrier;
-}
+} ;
 struct $collect_record{
     $bundle entries;
     _Bool  marks[];
     int numMarked;
-}
+};
 struct $gcollect_checker{
     int length;
     $collect_record  records[];
-}
+};
 struct $collect_checker{
     $gcollect_checker checker;
-}
+};
 //======================== civlc.cvh =======================
 void $assert(_Bool expr, ...);
 void $assume(_Bool expr);
@@ -301,7 +301,7 @@ void $elaborate(int x);
 $bundle $bundle_pack(void* ptr, int size);
 void $bundle_unpack($bundle bundle, void* ptr);
 //========================= stdio.h ========================
-int printf(restrict char* format, ...);
+//int printf(restrict char* format, ...);
 //========================== mpi.h =========================
 int MPI_Send(void*, int, MPI_Datatype, int, int, MPI_Comm);
 int MPI_Recv(void*, int, MPI_Datatype, int, int, MPI_Comm, MPI_Status*);
@@ -314,7 +314,7 @@ struct MPI_Comm{
     $collect_checker collect_checker;
     $barrier barrier;
     int gcommIndex;
-}
+} ;
 int MPI_Comm_size(MPI_Comm comm, int* size)
 {
   $mpi_sys_status curr_status;
@@ -355,7 +355,7 @@ struct $mpi_gcomm{
     $gcomm col;
     $gcollect_checker collect_checker;
     $gbarrier gbarrier;
-}
+} ;
 int sizeofDatatype(MPI_Datatype datatype)
 {
   switch(datatype)
@@ -471,17 +471,17 @@ int $mpi_recv(void* buf, int count, MPI_Datatype datatype, int source, int tag, 
 struct $queue{
     int length;
     $message  messages[];
-}
+} ;
 struct $gcomm{
     int nprocs;
     $proc  procs[];
     _Bool  isInit[];
     $queue  buf[][];
-}
+};
 struct $comm{
     int place;
     $gcomm gcomm;
-}
+};
 $message $message_pack(int source, int dest, int tag, void* data, int size)
 {
   $message result;
@@ -539,7 +539,7 @@ void _mpi_process(int _mpi_rank)
 } Darr;
   Darr display()
   {
-    printf("here I am\n");
+    //printf("here I am\n");
     Darr d1;
     d1.n1 = 5;
     d1.n2 = 10;
@@ -583,11 +583,11 @@ void _mpi_process(int _mpi_rank)
     MPI_Comm_rank(MPI_COMM_WORLD, &(rank));
     MPI_Comm comm = MPI_COMM_WORLD;
     Darr d1 = display();
-    if(d1.n1 < d1.n2)
-      printf("SUCCESS\n");
+    //if(d1.n1 < d1.n2)
+      //printf("SUCCESS\n");
     Final_Sum = Compute(comm, rank, numProcs);
-    if(rank == 0)
-      printf("Final Sum on a Ring = %d\n", Final_Sum);
+   // if(rank == 0)
+     // printf("Final Sum on a Ring = %d\n", Final_Sum);
     $mpi_finalize();
   }
   {

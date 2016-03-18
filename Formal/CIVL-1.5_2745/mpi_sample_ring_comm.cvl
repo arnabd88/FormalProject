@@ -49,18 +49,55 @@ void _mpi_process(int _mpi_rank)
 	return d1 ;
   }
 
+  int Compute(MPI_Comm comm, int rank, int numProcs)
+  {
+    int Sum;
+	int send_partner ;
+	int recv_partner ;
+	MPI_Status stat ;
+	if(rank == (numProcs - 1))
+	   send_partner = 0;
+	else
+	   send_partner = rank + 1 ;
+
+	if(rank == 0)
+	   recv_partner = numProcs - 1 ;
+	else
+	   recv_partner = rank - 1 ;
+
+	if(rank==0)
+	{
+	   Sum = rank ;
+	   MPI_Send(&(Sum), 1, MPI_INT, send_partner, 1, comm);
+	   MPI_Recv(&(Sum), 1, MPI_INT, recv_partner, 1, comm, &(stat));
+	}
+	else
+	{
+	   MPI_Recv(&(Sum), 1, MPI_INT, recv_partner, 1, comm, &(stat));
+	   Sum = Sum + rank ;
+	   MPI_Send(&(Sum), 1, MPI_INT, send_partner, 1, comm);
+	}
+	return Sum ;
+  }
+
   int _gen_main(int argc, char* argv[])
   {
     int numProcs ;
 	int rank ;
+	int Final_Sum ;
 	$mpi_init();
 	MPI_Comm_size(MPI_COMM_WORLD, &(numProcs));
 	MPI_Comm_rank(MPI_COMM_WORLD, &(rank));
 	MPI_Comm comm = MPI_COMM_WORLD ;
 	Darr d1 = display();
 	$assert(d1.n1 < d1.n2) ;
+	/*
+	//-- This causes a deadlock violation since $when blocks execution until d1.n1 > d1.n2 similar to @(check) in verilog
 	$when(d1.n1 > d1.n2) d1.n1 += d1.n2 - d1.n1 ;
 	$assert(d1.n1 < d1.n2) ;
+	*/
+	Final_Sum = Compute(comm, rank, numProcs);
+	$mpi_finalize();
 
 	$mpi_finalize();
   }
